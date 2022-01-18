@@ -1,12 +1,12 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 
-export default function ListItem({name, symbol, currentPrice, changePercent, logo}) {
+export default function ListItem({name, symbol, currentPrice, changePercent, logo, onPress}) {
 
     const priceColor = changePercent > 0 ? "#34C759" : "#FF3B30";
 
     return (
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onPress}>
         <View style={styles.itemWrapper}>
           <View style={styles.leftWraper}>
             <Image
