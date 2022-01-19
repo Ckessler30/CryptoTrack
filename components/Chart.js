@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Image, Dimensions} from 'react-native'
+import { View, Text, StyleSheet, Image, Dimensions, SafeAreaView} from 'react-native'
 import {
   ChartDot,
   ChartPath,
@@ -7,6 +7,7 @@ import {
   ChartYLabel
 } from "@rainbow-me/animated-charts";
 import { useSharedValue } from 'react-native-reanimated';
+
 
 export const { width: SIZE } = Dimensions.get("window");
 export default function Chart({currentPrice, logo, changePercent, sparkline, name, symbol}) {
@@ -33,51 +34,65 @@ export default function Chart({currentPrice, logo, changePercent, sparkline, nam
 
 
     return (
-      <ChartPathProvider
-        data={{ points: sparkline, smoothingStrategy: "bezier" }}
-      >
-        <View style={styles.chartWrapper}>
-          <View style={styles.titlesWrapper}>
-            <View style={styles.upperTitles}>
-              <View style={styles.upperLeftTitle}>
-                <Image source={{ uri: logo }} style={styles.image} />
-                <Text style={styles.subtitle}>
-                  {name} ({symbol.toUpperCase()}){" "}
-                </Text>
+      <>
+        {!loading && (
+          <ChartPathProvider
+            data={{ points: sparkline, smoothingStrategy: "bezier" }}
+          >
+            <SafeAreaView style={styles.chartContainer}>
+              <View style={styles.titleWrapper}>
+                <View style={styles.upperTitles}>
+                  <View style={styles.upperLeftTitle}>
+                    <Image source={{ uri: logo }} style={styles.image} />
+                    <Text style={styles.subtitleLogo}>
+                      {name} ({symbol.toUpperCase()}){" "}
+                    </Text>
+                  </View>
+                  <Text style={styles.subtitle}>7d</Text>
+                </View>
               </View>
-              <Text style={styles.subtitle}>7d</Text>
-            </View>
-
-            <View style={styles.lowerTitles}>
-              <ChartYLabel format={formatUSD} style={styles.boldTitle} />
-              {/* <Text style={styles.boldTitle}>
-                ${currentPrice.toLocaleString("en-US", { currency: "USD" })}
-              </Text> */}
-              <Text style={[styles.title, { color: priceColor }]}>
-                {changePercent.toFixed(2)}%
-              </Text>
-            </View>
-          </View>
-          { loading === false ? 
-            <View style={styles.chartLineWrapper}>
-                <ChartPath height={SIZE / 2} stroke="black" width={SIZE} />
-                <ChartDot style={{ backgroundColor: "black" }} />
-            </View>
-            :
-            null
-            
-        }
-        </View>
-      </ChartPathProvider>
+              <View style={styles.divider} />
+              <View style={styles.chartWrapper}>
+                <View style={styles.titlesWrapper}>
+                  <View style={styles.lowerTitles}>
+                    <ChartYLabel format={formatUSD} style={styles.boldTitle} />
+                    {/* <Text style={styles.boldTitle}>
+                    ${currentPrice.toLocaleString("en-US", { currency: "USD" })}
+                  </Text> */}
+                    <Text style={[styles.title, { color: priceColor }]}>
+                      {changePercent.toFixed(2)}%
+                    </Text>
+                  </View>
+                </View>
+                 
+                  <View style={styles.chartLineWrapper}>
+                    <ChartPath
+                      height={SIZE / 2}
+                      stroke={priceColor}
+                      width={SIZE}
+                    />
+                    <ChartDot style={{ backgroundColor: "white" }} />
+                  </View>
+                
+              </View>
+            </SafeAreaView>
+          </ChartPathProvider>
+        )}
+      </>
     );
 }
 
 const styles = StyleSheet.create({
+  chartContainer: {
+    backgroundColor: 'black',
+    height: '47%',
+    marginTop: 15
+  },
   chartWrapper: {
     marginVertical: 16,
   },
   titlesWrapper: {
-      marginHorizontal: 16
+    marginHorizontal: 16,
   },
   upperTitles: {
     flexDirection: "row",
@@ -104,12 +119,32 @@ const styles = StyleSheet.create({
   },
   boldTitle: {
     fontSize: 24,
-    fontWeight: 'bold'
+    fontWeight: "bold",
+    color: 'white'
   },
   title: {
-      fontSize: 18
+    fontSize: 18,
   },
   chartLineWrapper: {
-      marginTop: 40
+    marginTop: 40,
+  },
+  titleWrapper: {
+    marginTop: 20,
+    paddingHorizontal: 4,
+  },
+  largeTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+  },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "#A9ABB1",
+    // marginHorizontal: 16,
+    marginTop: 12,
+  },
+  subtitleLogo: {
+    color: 'white',
+    fontSize: 24
   }
 });
