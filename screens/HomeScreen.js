@@ -16,6 +16,7 @@ export default function HomeScreen({navigation}) {
   const [selectedCoinData, setSelectedCoinData] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -26,7 +27,6 @@ export default function HomeScreen({navigation}) {
         setLoading(false)
       }
     };
-
     const interval = setInterval(() => {
       fetchMarketData();
       // console.log("fetching new data")
@@ -34,19 +34,35 @@ export default function HomeScreen({navigation}) {
     return () => clearInterval(interval)
   }, []);
 
-  const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["40%"], []);
+  
+
 
   const handlePress = (item) => {
       navigation.navigate('Chart', item)
   };
+
+  const handleRefresh = () => {
+    setRefreshing(true)
+    const fetchMarketData = async () => {
+      const marketData = await getMarketData();
+      // console.log(marketData)
+      if(marketData){
+        setData(marketData);
+        setRefreshing(false)
+        // setLoading(false)
+      }
+    };
+    setTimeout(() => {
+      fetchMarketData()
+    }, 1000)
+  }
 
   return (
     <>
       {loading ? (
         <AnimatedLoader
           visible={loading}
-          overlayColor="rgba(255,255,255,0.75)"
+          overlayColor="black"
           source={require("./loader.json")}
           animationStyle={styles.lottie}
           speed={1}
@@ -55,13 +71,15 @@ export default function HomeScreen({navigation}) {
       ) : (
         <SafeAreaView style={styles.container}>
           <View style={styles.titleWrapper}>
-            <Text style={styles.largeTitle}>Markets</Text>
+            <Text style={styles.largeTitle}>Crypto</Text>
           </View>
           <View style={styles.divider} />
 
           <FlatList
             keyExtractor={(item) => item.id}
             data={data}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
             // ListHeaderComponent={<ListHeader />}
             renderItem={({ item }) => (
               <ListItem

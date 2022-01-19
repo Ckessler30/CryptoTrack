@@ -34,52 +34,59 @@ export default function Chart({currentPrice, logo, changePercent, sparkline, nam
 
 
     return (
-      <ChartPathProvider
-        data={{ points: sparkline, smoothingStrategy: "bezier" }}
-      >
-        <SafeAreaView style={styles.chartContainer}>
-          <View style={styles.titleWrapper}>
-            <Text style={styles.largeTitle}>Markets</Text>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.chartWrapper}>
-            <View style={styles.titlesWrapper}>
-
-              <View style={styles.lowerTitles}>
-                <ChartYLabel format={formatUSD} style={styles.boldTitle} />
-                {/* <Text style={styles.boldTitle}>
-                ${currentPrice.toLocaleString("en-US", { currency: "USD" })}
-              </Text> */}
-                <Text style={[styles.title, { color: priceColor }]}>
-                  {changePercent.toFixed(2)}%
-                </Text>
-              </View>
-            </View>
-            {loading === false ? (
-              <View style={styles.chartLineWrapper}>
-                <ChartPath height={SIZE / 2} stroke={priceColor} width={SIZE} />
-                <ChartDot style={{ backgroundColor: "white" }} />
-              </View>
-            ) : null}
-              <View style={styles.upperTitles}>
-                <View style={styles.upperLeftTitle}>
-                  <Image source={{ uri: logo }} style={styles.image} />
-                  <Text style={styles.subtitle}>
-                    {name} ({symbol.toUpperCase()}){" "}
-                  </Text>
+      <>
+        {!loading && (
+          <ChartPathProvider
+            data={{ points: sparkline, smoothingStrategy: "bezier" }}
+          >
+            <SafeAreaView style={styles.chartContainer}>
+              <View style={styles.titleWrapper}>
+                <View style={styles.upperTitles}>
+                  <View style={styles.upperLeftTitle}>
+                    <Image source={{ uri: logo }} style={styles.image} />
+                    <Text style={styles.subtitleLogo}>
+                      {name} ({symbol.toUpperCase()}){" "}
+                    </Text>
+                  </View>
+                  <Text style={styles.subtitle}>7d</Text>
                 </View>
-                <Text style={styles.subtitle}>7d</Text>
               </View>
-          </View>
-        </SafeAreaView>
-      </ChartPathProvider>
+              <View style={styles.divider} />
+              <View style={styles.chartWrapper}>
+                <View style={styles.titlesWrapper}>
+                  <View style={styles.lowerTitles}>
+                    <ChartYLabel format={formatUSD} style={styles.boldTitle} />
+                    {/* <Text style={styles.boldTitle}>
+                    ${currentPrice.toLocaleString("en-US", { currency: "USD" })}
+                  </Text> */}
+                    <Text style={[styles.title, { color: priceColor }]}>
+                      {changePercent.toFixed(2)}%
+                    </Text>
+                  </View>
+                </View>
+                 
+                  <View style={styles.chartLineWrapper}>
+                    <ChartPath
+                      height={SIZE / 2}
+                      stroke={priceColor}
+                      width={SIZE}
+                    />
+                    <ChartDot style={{ backgroundColor: "white" }} />
+                  </View>
+                
+              </View>
+            </SafeAreaView>
+          </ChartPathProvider>
+        )}
+      </>
     );
 }
 
 const styles = StyleSheet.create({
   chartContainer: {
     backgroundColor: 'black',
-    height: '100%'
+    height: '47%',
+    marginTop: 15
   },
   chartWrapper: {
     marginVertical: 16,
@@ -123,7 +130,7 @@ const styles = StyleSheet.create({
   },
   titleWrapper: {
     marginTop: 20,
-    paddingHorizontal: 16,
+    paddingHorizontal: 4,
   },
   largeTitle: {
     fontSize: 24,
@@ -133,7 +140,11 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: "#A9ABB1",
-    marginHorizontal: 16,
-    marginTop: 16,
+    // marginHorizontal: 16,
+    marginTop: 12,
   },
+  subtitleLogo: {
+    color: 'white',
+    fontSize: 24
+  }
 });

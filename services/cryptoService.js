@@ -43,3 +43,15 @@ export const getMarketData = async() => {
       return err;
     }
 }
+
+export const getStatusUpdates = async() => {
+    try{
+        const response = await axios.get("https://api.coingecko.com/api/v3/status_updates?project_type=coin&per_page=20")
+        const data = response.data.status_updates
+        // console.log(data)
+        return data
+
+    }catch(err){
+        return err
+    }
+}
